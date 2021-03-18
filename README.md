@@ -17,7 +17,7 @@
 
 
 
-### VM设计（updating）
+### VM 设计（updating）
 
 ```rust
 pub struct VM {
@@ -31,6 +31,17 @@ pub struct VM {
     remainder: u32,
     /// equality check
     equal_flag: bool,
+}
+```
+
+### REPL 设计（updating）
+
+```rust
+// core structure for the REPL for the Assembler
+pub struct REPL {
+    command_buffer: Vec<String>,
+    // The VM the REPL will use to execute code
+    vm: VM
 }
 ```
 

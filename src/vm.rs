@@ -2,15 +2,15 @@ use crate::instruction::Opcode;
 
 pub struct VM {
     /// 32bit registers
-    registers: [i32; 32],
+    pub registers: [i32; 32],
     /// program counter
-    pc: usize,
+    pub pc: usize,
     /// vector to store a byte
-    program: Vec<u8>,
+    pub program: Vec<u8>,
     /// for DIV operation
-    remainder: u32,
+    pub remainder: u32,
     /// equality check
-    equal_flag: bool,
+    pub equal_flag: bool,
 }
 
 impl VM {
