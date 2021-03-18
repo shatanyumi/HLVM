@@ -27,7 +27,10 @@ pub struct VM {
     pc: usize,
     /// vector to store a byte
     program: Vec<u8>,
+    /// for DIV operation
     remainder: u32,
+    /// equality check
+    equal_flag: bool,
 }
 ```
 
