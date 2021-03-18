@@ -97,8 +97,8 @@ impl VM {
 
     pub fn get_test_vm() -> VM {
         let mut test_vm = VM::new();
-        test_vm.registers[0] = 10;
-        test_vm.registers[1] = 15;
+        test_vm.registers[0] = 15;
+        test_vm.registers[1] = 10;
         test_vm
     }
 }
@@ -145,5 +145,30 @@ mod tests {
         test_vm.program = vec![1,0,1,2];
         test_vm.run_once();
         assert_eq!(test_vm.registers[2],25);
+    }
+
+    #[test]
+    fn test_opcode_sub(){
+        let mut test_vm = VM::get_test_vm();
+        test_vm.program = vec![1,0,1,2];
+        test_vm.run_once();
+        assert_eq!(test_vm.registers[2],5);
+    }
+
+    #[test]
+    fn test_opcode_mul(){
+        let mut test_vm = VM::get_test_vm();
+        test_vm.program = vec![1,0,1,2];
+        test_vm.run_once();
+        assert_eq!(test_vm.registers[2],150);
+    }
+
+    #[test]
+    fn test_opcode_DIV(){
+        let mut test_vm = VM::get_test_vm();
+        test_vm.program = vec![1,0,1,2];
+        test_vm.run_once();
+        assert_eq!(test_vm.registers[2],1);
+        assert_eq!(test_vm.remainder,5)
     }
 }
