@@ -7,6 +7,7 @@ pub struct VM {
     pc: usize,
     /// vector to store a byte
     program: Vec<u8>,
+    /// for DIV operation
     remainder: u32,
 }
 
@@ -16,7 +17,7 @@ impl VM {
             registers: [0; 32],
             program: vec![],
             pc: 0,
-            remainder:0,
+            remainder: 0,
         }
     }
 
@@ -41,32 +42,44 @@ impl VM {
                 let register = self.next_8_bits() as usize; // We cast to usize so we can use it as an index into the array
                 let number = self.next_16_bits() as u16;
                 self.registers[register] = number as i32; // Our registers are i32s, so we need to cast it. We'll cover that later.
-            },
+            }
             Opcode::ADD => {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = register1 + register2;
-            },
+            }
             Opcode::SUB => {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = register1 - register2;
-            },
+            }
             Opcode::MUL => {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = register1 * register2;
-            },
+            }
             Opcode::DIV => {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = register1 / register2;
                 self.remainder = (register1 % register2) as u32;
-            },
+            }
+            Opcode::JMP => {
+                let target = self.registers[self.next_8_bits() as usize];
+                self.pc = target as usize;
+            }
+            Opcode::JMPF => {
+                let target = self.registers[self.next_8_bits() as usize] as usize;
+                self.pc += target;
+            }
+            Opcode::JMPB => {
+                let target = self.registers[self.next_8_bits() as usize] as usize;
+                self.pc -= target;
+            }
             Opcode::HLT => {
                 println!("HLT encountered");
                 return false;
-            },
+            }
             Opcode::IGL => {
                 println!("IGL encountered");
                 return false;
@@ -142,33 +155,64 @@ mod tests {
     #[test]
     fn test_opcode_add() {
         let mut test_vm = VM::get_test_vm();
-        test_vm.program = vec![1,0,1,2];
+        test_vm.program = vec![1, 0, 1, 2];
         test_vm.run_once();
-        assert_eq!(test_vm.registers[2],25);
+        assert_eq!(test_vm.registers[2], 25);
     }
 
     #[test]
-    fn test_opcode_sub(){
+    fn test_opcode_sub() {
         let mut test_vm = VM::get_test_vm();
-        test_vm.program = vec![1,0,1,2];
+        test_vm.program = vec![1, 0, 1, 2];
         test_vm.run_once();
-        assert_eq!(test_vm.registers[2],5);
+        assert_eq!(test_vm.registers[2], 5);
     }
 
     #[test]
-    fn test_opcode_mul(){
+    fn test_opcode_mul() {
         let mut test_vm = VM::get_test_vm();
-        test_vm.program = vec![1,0,1,2];
+        test_vm.program = vec![1, 0, 1, 2];
         test_vm.run_once();
-        assert_eq!(test_vm.registers[2],150);
+        assert_eq!(test_vm.registers[2], 150);
     }
 
     #[test]
-    fn test_opcode_DIV(){
+    fn test_opcode_div() {
         let mut test_vm = VM::get_test_vm();
-        test_vm.program = vec![1,0,1,2];
+        test_vm.program = vec![1, 0, 1, 2];
         test_vm.run_once();
-        assert_eq!(test_vm.registers[2],1);
-        assert_eq!(test_vm.remainder,5)
+        assert_eq!(test_vm.registers[2], 1);
+        assert_eq!(test_vm.remainder, 5)
+    }
+
+    #[test]
+    fn test_opcode_jmp() {
+        let mut test_vm = VM::get_test_vm();
+        test_vm.registers[0] = 1;
+        test_vm.program = vec![6,0,0,0];
+        test_vm.run_once();
+        assert_eq!(test_vm.pc,1);
+    }
+
+    #[test]
+    fn test_opcode_jmpf() {
+        let mut test_vm = VM::get_test_vm();
+        test_vm.registers[0] = 2;
+        test_vm.program = vec![7,0,0,0,6,0,0,0];
+        test_vm.run_once();
+        /// program pc+2, and jmpf register[0]=2, pc+2
+        /// final pc = 4
+        assert_eq!(test_vm.pc,4);
+    }
+
+    #[test]
+    fn test_opcode_jmpb() {
+        let mut test_vm = VM::get_test_vm();
+        test_vm.registers[0] = 2;
+        test_vm.program = vec![8,0,0,0,6,0,0,0];
+        test_vm.run_once();
+        /// program pc+2, and jmpb register[0]=2, pc-2
+        /// final pc = 0
+        assert_eq!(test_vm.pc,0);
     }
 }
