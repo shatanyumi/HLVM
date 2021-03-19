@@ -159,6 +159,11 @@ impl VM {
         test_vm.registers[1] = 10;
         test_vm
     }
+
+    // add a byte
+    pub fn add_byte(&mut self,byte: u8){
+        self.program.push(byte);
+    }
 }
 
 #[cfg(test)]
@@ -245,8 +250,8 @@ mod tests {
         test_vm.registers[0] = 2;
         test_vm.program = vec![7, 0, 0, 0, 6, 0, 0, 0];
         test_vm.run_once();
-        /// program pc+2, and jmpf register[0]=2, pc+2
-        /// final pc = 4
+        // program pc+2, and jmpf register[0]=2, pc+2
+        // final pc = 4
         assert_eq!(test_vm.pc, 4);
     }
 
@@ -256,8 +261,8 @@ mod tests {
         test_vm.registers[0] = 2;
         test_vm.program = vec![8, 0, 0, 0, 6, 0, 0, 0];
         test_vm.run_once();
-        /// program pc+2, and jmpb register[0]=2, pc-2
-        /// final pc = 0
+        // program pc+2, and jmpb register[0]=2, pc-2
+        // final pc = 0
         assert_eq!(test_vm.pc, 0);
     }
 
@@ -353,5 +358,12 @@ mod tests {
         test_vm.program = vec![15, 0, 0, 0, 17, 0, 0, 0, 17, 0, 0, 0];
         test_vm.run_once();
         assert_eq!(test_vm.pc, 7);
+    }
+
+    #[test]
+    fn test_func_add_byte(){
+        let mut test_vm = VM::get_test_vm();
+        test_vm.add_byte(0xE8);
+        assert_eq!(test_vm.program[0],0xE8);
     }
 }

@@ -58,13 +58,38 @@ impl REPL{
                     println!("End of Register Listing");
                 },
                 _ => {
-                    println!("Invalid input");
+                    // let results = self.parse_hex(buffer);
+                    // match results {
+                    //     Ok(bytes)=>{
+                    //         for byte in bytes {
+                    //             self.vm.add_byte(byte)
+                    //         }
+                    //     },
+                    //     Err(_e)=>{
+                    //         println!("Unable to decode hex string.Please enter 4 group of 2 hex characters.")
+                    //     }
+                    // };
+                    // self.vm.run_once();
+                    println!("Input Invalied!");
                 }
             }
         }
     }
 
-    fn parse_hex(&mut self,i: &str) {
-
-    }
+    // fn parse_hex(&mut self,i: &str) {
+    //     let split = i.split(" ").collect::<Vec<&str>>();
+    //     let mut results: Vec<u8> = vec![];
+    //     for hex_string in split {
+    //         let byte = u8::from_str_radix(&hex_string, 16);
+    //         match byte {
+    //             OK(result) => {
+    //                 results.push(result);
+    //             },
+    //             Err(e) => {
+    //                 return Err(e);
+    //             }
+    //         }
+    //     }
+    //     Ok(results);
+    // }
 }
