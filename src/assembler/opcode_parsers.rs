@@ -2,7 +2,7 @@ use nom::types::CompleteStr;
 use crate::instruction::Opcode;
 use crate::assembler::Token;
 
-name!(opcode_load<CompleteStr,Token>,
+named!(opcode_load<CompleteStr,Token>,
     do_parse!(
         tag!("load") >> (Token::Op{code: Opcode::LOAD})
     )
